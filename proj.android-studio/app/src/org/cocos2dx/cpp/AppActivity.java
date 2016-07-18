@@ -60,6 +60,9 @@ public class AppActivity extends Cocos2dxActivity {
                     public void onSuccess(LoginResult loginResult) {
                         Toast.makeText(getBaseContext(),"로그인 성공",Toast.LENGTH_SHORT).show();
                         Profile profile = Profile.getCurrentProfile();
+
+                        Log.d("deeeeeeebug",profile.getProfilePictureUri(300,300).toString());
+
                         loginSuccess(profile.getId(),profile.getName());
                     }
 
@@ -76,8 +79,6 @@ public class AppActivity extends Cocos2dxActivity {
                     }
                 });
 
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
-
     }
 
     @Override
@@ -88,5 +89,6 @@ public class AppActivity extends Cocos2dxActivity {
 
     public static void facebookLogin()
     {
+        LoginManager.getInstance().logInWithReadPermissions((Activity)AppActivity.getContext(), Arrays.asList("public_profile"));
     }
 }

@@ -111,13 +111,20 @@ bool MainScene::init()
 
 	fbLoginMenuitem->setScale(0.7f);
 
+	auto main_menu = Menu::create(gameStartMenuitem, rankingMenuitem, fbLoginMenuitem, nullptr);
 
-	Menu* main_menu;
 
-	if (UserDefault::getInstance()->getStringForKey("user_id", "").compare("") == 0)
-		main_menu = Menu::create(gameStartMenuitem, rankingMenuitem, fbLoginMenuitem, nullptr);
-	else
-		main_menu = Menu::create(gameStartMenuitem, rankingMenuitem, nullptr);
+	if (UserDefault::getInstance()->getStringForKey("user_id", "").compare("") != 0)
+	{
+		fbLoginMenuitem->setVisible(false);
+		std::string userNickName = UserDefault::getInstance()->getStringForKey("user_nickname", "");
+
+		auto nickNameLabel = Label::createWithTTF(userNickName, "fonts/kor_font.ttf", 40.0f);
+		
+		nickNameLabel->setColor(Color3B::BLACK);
+		nickNameLabel->setPosition(100, 700);
+		addChild(nickNameLabel);
+	}
 
 	main_menu->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 200);
 
