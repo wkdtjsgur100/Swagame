@@ -1,6 +1,7 @@
 #include "MainScene.h"
 #include "SimpleAudioEngine.h"
-#include "HelloWorldScene.h"
+#include "GameScene.h"
+#include "UserProfile.h"
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 #include "platform/android/jni/JniHelper.h"
@@ -20,8 +21,10 @@ extern "C" {
 #endif
 	/*
 	* Class:     org_cocos2dx_cpp_AppActivity
-	* Method:    onSuccess
+	* Method:    loginSuccess
 	* Signature: ()V
+	* Description : JNI를 이용해서 페이스북 최초 로그인이 Success 되었을 시 해당 함수가 호출 되게 했습니다.
+	                로그인이 성공하면, UserDefault를 이용해 해당 기기에 facebook의 고유 id와 닉네임을 저장합니다.
 	*/
 	JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_AppActivity_loginSuccess(JNIEnv *env, jobject obj,jstring id, jstring nickname)
 	{
@@ -63,25 +66,21 @@ bool MainScene::init()
 	//////////////////////////////
 	// 1. super init first
 	if (!Layer::init())
-	{
 		return false;
-	}
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 
 	auto sprite = Sprite::create("main/background.png");
-
-	// position the sprite on the center of the screen
 	sprite->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
-
-	// add the sprite as a child to this layer
 	this->addChild(sprite, 0);
 
 	auto gameStartLabel = Label::createWithTTF("GAME START", "fonts/font.ttf", 40.0f);
 	gameStartLabel->setColor(Color3B::BLACK);
 
+	//GAME START Label을 누르면 GameScene으로 Transition
 	auto gameStartMenuitem = MenuItemLabel::create(gameStartLabel, [&](Ref* sender) {
-		auto scene = TransitionPageTurn::create(1.0f, HelloWorld::createScene(), false);
+		//transition to GameScene
+		auto scene = TransitionPageTurn::create(1.0f, GameScene::createScene(), false);
 		Director::getInstance()->replaceScene(scene);
 	});
 
@@ -90,6 +89,7 @@ bool MainScene::init()
 
 	auto rankingMenuitem = MenuItemLabel::create(rankingLabel);
 
+	//facebook connect 버튼을 누르면 Jni로 facebookLogin native 메서드를 호출합니다. (안드로이드)
 	auto fbLoginMenuitem = MenuItemImage::create("main/facebook_connect_button.png", "main/facebook_connect_button.png",
 		[](Ref* sender) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
@@ -111,26 +111,36 @@ bool MainScene::init()
 
 	fbLoginMenuitem->setScale(0.7f);
 
+	//게임 스타트 버튼, 랭킹 버튼, 페북 로그인 버튼으로 메뉴 생성
 	auto main_menu = Menu::create(gameStartMenuitem, rankingMenuitem, fbLoginMenuitem, nullptr);
 
-
-	if (UserDefault::getInstance()->getStringForKey("user_id", "").compare("") != 0)
+	if (UserProfile::getInstance()->isLoggedIn())
 	{
-		fbLoginMenuitem->setVisible(false);
-		std::string userNickName = UserDefault::getInstance()->getStringForKey("user_nickname", "");
-
-		auto nickNameLabel = Label::createWithTTF(userNickName, "fonts/kor_font.ttf", 40.0f);
-		
-		nickNameLabel->setColor(Color3B::BLACK);
-		nickNameLabel->setPosition(100, 700);
-		addChild(nickNameLabel);
+		fbLoginMenuitem->setVisible(false);	//페북 로그인 버튼을 없애고
+		addLoggedInUserInterface();         //로그인 된 사용자 인터페이스를 add
 	}
 
 	main_menu->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 200);
-
 	main_menu->alignItemsVerticallyWithPadding(10);
 
 	addChild(main_menu);
 
     return true;
+}
+
+void MainScene::addLoggedInUserInterface()
+{
+	std::string userNickName = UserProfile::getInstance()->getUserNickName();
+
+	auto nickNameLabel = Label::createWithTTF(userNickName, "fonts/kor_font.ttf", 40.0f);
+	auto subLabel = Label::createWithTTF("WELCOME!!!!", "fonts/kor_font.ttf", 20.0f);
+
+	nickNameLabel->setColor(Color3B::BLACK);
+	nickNameLabel->setPosition(100, 700);
+
+	subLabel->setPosition(subLabel->getContentSize().width / 2, -subLabel->getContentSize().height / 2);
+	subLabel->setColor(Color3B::BLACK);
+
+	nickNameLabel->addChild(subLabel);
+	addChild(nickNameLabel);
 }

@@ -1,4 +1,4 @@
-#include "HelloWorldScene.h"
+#include "GameScene.h"
 #include "SimpleAudioEngine.h"
 #include "MainScene.h"
 
@@ -6,13 +6,13 @@ USING_NS_CC;
 using namespace ui;
 using namespace CocosDenshion;
 
-Scene* HelloWorld::createScene()
+Scene* GameScene::createScene()
 {
     // 'scene' is an autorelease object
     auto scene = Scene::create();
     
     // 'layer' is an autorelease object
-    auto layer = HelloWorld::create();
+    auto layer = GameScene::create();
 
     // add layer as a child to scene
     scene->addChild(layer);
@@ -21,7 +21,7 @@ Scene* HelloWorld::createScene()
     return scene;
 }
 
-void HelloWorld::onEnterTransitionDidFinish()
+void GameScene::onEnterTransitionDidFinish()
 {
 	Layer::onEnterTransitionDidFinish();
 
@@ -29,7 +29,7 @@ void HelloWorld::onEnterTransitionDidFinish()
 }
 
 // on "init" you need to initialize your instance
-bool HelloWorld::init()
+bool GameScene::init()
 {
     //////////////////////////////
     // 1. super init first
@@ -107,7 +107,7 @@ bool HelloWorld::init()
     return true;
 }
 
-void HelloWorld::setTimerPercent(float percent)
+void GameScene::setTimerPercent(float percent)
 {
 	timer->stopAllActions();
 
@@ -118,7 +118,7 @@ void HelloWorld::setTimerPercent(float percent)
 	timer->runAction(progressToZero);
 }
 
-void HelloWorld::changeTimerType(int timerType)
+void GameScene::changeTimerType(int timerType)
 {
 	if (timerType == 0)
 	{
@@ -133,7 +133,7 @@ void HelloWorld::changeTimerType(int timerType)
 	}
 }
 
-void HelloWorld::refreshQuestion()
+void GameScene::refreshQuestion()
 {
 	changeTimerType(0);
 	setTimerPercent(100.0f);
@@ -146,7 +146,7 @@ void HelloWorld::refreshQuestion()
 	btn_ma->setVisible(false);
 }
 
-void HelloWorld::update(float dt)
+void GameScene::update(float dt)
 {
 	if (timer->getPercentage() <= 0.0f)
 	{
@@ -169,7 +169,7 @@ void HelloWorld::update(float dt)
 	}
 }
 
-void HelloWorld::gameOver()
+void GameScene::gameOver()
 {
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
@@ -195,7 +195,7 @@ void HelloWorld::gameOver()
 	retryBtn->addTouchEventListener([&](Ref*, Widget::TouchEventType e) {
 		if (e == Widget::TouchEventType::ENDED)
 		{
-			auto scene = TransitionFlipX::create(1.0f, HelloWorld::createScene(),
+			auto scene = TransitionFlipX::create(1.0f, GameScene::createScene(),
 				TransitionScene::Orientation::RIGHT_OVER);
 			Director::getInstance()->replaceScene(scene);
 		}
@@ -223,7 +223,7 @@ void HelloWorld::gameOver()
 	this->pause();
 }
 
-void HelloWorld::correctCheck(int type)
+void GameScene::correctCheck(int type)
 {
 	if (timer->getTag() == 1)
 	{
@@ -243,13 +243,13 @@ void HelloWorld::correctCheck(int type)
 	}
 }
 
-void HelloWorld::correctWord()
+void GameScene::correctWord()
 {
 	std::string path = "awesome/" + StringUtils::format("%d", random(1, 9)) + ".png";
 	imgEffect(path);
 }
 
-void HelloWorld::uncorrectWord()
+void GameScene::uncorrectWord()
 {
 	std::string path = "bad/" + StringUtils::format("%d", random(1, 14)) + ".png";
 	imgEffect(path);
@@ -259,7 +259,7 @@ void HelloWorld::uncorrectWord()
 	setTimerPercent(timer->getPercentage() - 30.0f);
 }
 
-void HelloWorld::imgEffect(std::string path)
+void GameScene::imgEffect(std::string path)
 {
 	auto corSpr = Sprite::create(path);
 	Size visibleSize = Director::getInstance()->getVisibleSize();
@@ -276,12 +276,12 @@ void HelloWorld::imgEffect(std::string path)
 	addChild(corSpr);
 }
 
-void HelloWorld::addScore(int delta)
+void GameScene::addScore(int delta)
 {
 	score += delta;
 	score_label->setString(StringUtils::format("%d", score));
 }
-void HelloWorld::menuCloseCallback(Ref* pSender)
+void GameScene::menuCloseCallback(Ref* pSender)
 {
     Director::getInstance()->end();
 

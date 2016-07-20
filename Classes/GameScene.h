@@ -4,7 +4,7 @@
 #include "ui/CocosGUI.h"
 #include "SomaManager.h"
 
-class HelloWorld : public cocos2d::Layer
+class GameScene : public cocos2d::Layer
 {
 	SomaWordViewer* somaWordViewer;
 	SomaWordManager* swagManager;
@@ -40,5 +40,5 @@ public:
 
 	void imgEffect(std::string path);
     // implement the "static create()" method manually
-    CREATE_FUNC(HelloWorld);
+    CREATE_FUNC(GameScene);
 };
