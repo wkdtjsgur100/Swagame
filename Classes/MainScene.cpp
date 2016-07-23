@@ -13,7 +13,8 @@ using namespace ui;
 using namespace CocosDenshion;
 
 //로그인 하는 순간 로그인 버튼을 없애기 위함//
-MenuItem* fbLoginBtnPtr = nullptr;
+Menu* fbLoginBtnPtr = nullptr;
+Menu* mainMenuBtnPtr = nullptr;
 Label* titleLabelPtr = nullptr;
 
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
@@ -30,6 +31,7 @@ extern "C" {
 	* Signature: ()V
 	* Description : JNI를 이용해서 페이스북 최초 로그인이 Success 되었을 시 해당 함수가 호출 되게 했습니다.
 	                로그인이 성공하면, UserDefault를 이용해 해당 기기에 facebook의 고유 id와 닉네임을 저장합니다.
+					그리고 로그인 버튼을 지우고 게임 메뉴를 띄웁니다.
 	*/
 	JNIEXPORT void JNICALL Java_org_cocos2dx_cpp_AppActivity_loginSuccess(JNIEnv *env, jobject obj,jstring id, jstring nickname)
 	{
@@ -39,9 +41,11 @@ extern "C" {
 		UserDefault::getInstance()->setStringForKey("user_id", s_id);
 		UserDefault::getInstance()->setStringForKey("user_nickname", s_nickname);
 
-		if(fbLoginBtnPtr != nullptr)
+		if (fbLoginBtnPtr != nullptr)
+		{
 			fbLoginBtnPtr->setVisible(false);
-
+			mainMenuBtnPtr->setVisible(true);
+		}
 		if (titleLabelPtr != nullptr)
 		{
 			titleLabelPtr->setString(s_nickname);
@@ -128,22 +132,36 @@ bool MainScene::init()
 	});
 
 	fbLoginMenuitem->setScale(0.7f);
-	fbLoginBtnPtr = fbLoginMenuitem;
 
-	//게임 스타트 버튼, 랭킹 버튼, 페북 로그인 버튼으로 메뉴 생성
-	auto main_menu = Menu::create(gameStartMenuitem, rankingMenuitem, fbLoginMenuitem, nullptr);
+	//게임 스타트 버튼, 랭킹 버튼으로 메뉴 생성
+	auto main_menu = Menu::create(gameStartMenuitem, rankingMenuitem,nullptr);
 
 	addLoggedInUserInterface();         //로그인 된 사용자 인터페이스를 add
-	if (UserProfile::getInstance()->isLoggedIn())
-	{
-		fbLoginMenuitem->setVisible(false);	//페북 로그인 버튼을 없앤다.
-		nickNameLabel->setVisible(true);
-	}
 
 	main_menu->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 200);
+	
 	main_menu->alignItemsVerticallyWithPadding(10);
 
+	auto fbLoginMenu = Menu::createWithItem(fbLoginMenuitem);
+
+	fbLoginMenu->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 220);
+
+	addChild(fbLoginMenu);
 	addChild(main_menu);
+
+	if (UserProfile::getInstance()->isLoggedIn()) //로그인 되어 있으면
+	{
+		main_menu->setVisible(true);
+		fbLoginMenu->setVisible(false);
+	}
+	else
+	{
+		main_menu->setVisible(false);
+		fbLoginMenu->setVisible(true);
+	}
+
+	mainMenuBtnPtr = main_menu;
+	fbLoginBtnPtr = fbLoginMenu;
 
     return true;
 }
@@ -164,6 +182,7 @@ void MainScene::addLoggedInUserInterface()
 	nickNameLabel->addChild(subLabel);
 	addChild(nickNameLabel);
 
+	nickNameLabel->setVisible(false);
 	titleLabelPtr = nickNameLabel;
 }
 

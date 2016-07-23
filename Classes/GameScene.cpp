@@ -108,7 +108,7 @@ bool GameScene::init()
     return true;
 }
 
-void GameScene::setTimerPercent(float percent)
+void GameScene::setTimerPercent(const float percent)
 {
 	timer->stopAllActions();
 
