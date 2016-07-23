@@ -3,9 +3,6 @@
 #include "rapidjson/document.h"
 #include "rapidjson/reader.h"
 
-#include "ExtensionExport.h"
-#include "cocos-ext.h"
-
 USING_NS_CC;
 using namespace network;
 using namespace rapidjson;
@@ -107,4 +104,61 @@ void RankScene::parseJson(const char* json)
 
 void RankScene::makeRankTable()
 {
+	Size winSize = Director::getInstance()->getVisibleSize();
+
+	auto tableView = TableView::create(this, Size(60, 250));
+	tableView->setDirection(ScrollView::Direction::VERTICAL);
+	tableView->setPosition(Vec2(winSize.width - 150, winSize.height / 2 - 120));
+	tableView->setDelegate(this);
+	tableView->setVerticalFillOrder(TableView::VerticalFillOrder::TOP_DOWN);
+	
+	this->addChild(tableView);
+	tableView->reloadData();
+}
+
+
+Size RankScene::tableCellSizeForIndex(TableView *table, ssize_t idx)
+{
+	if (idx == 2) {
+		return Size(100, 100);
+	}
+	return Size(60, 60);
+}
+
+TableViewCell* RankScene::tableCellAtIndex(TableView *table, ssize_t idx)
+{
+	auto string = StringUtils::format("%ld", static_cast<long>(idx));
+	TableViewCell *cell = table->dequeueCell();
+	if (!cell) {
+		cell = new (std::nothrow) CustomTableViewCell();
+		cell->autorelease();
+		auto sprite = Sprite::create("Images/Icon.png");
+		sprite->setAnchorPoint(Vec2::ZERO);
+		sprite->setPosition(Vec2(0, 0));
+		cell->addChild(sprite);
+
+		auto label = Label::createWithSystemFont(string, "Helvetica", 20.0);
+		label->setPosition(Vec2::ZERO);
+		label->setAnchorPoint(Vec2::ZERO);
+		label->setTag(123);
+		cell->addChild(label);
+	}
+	else
+	{
+		auto label = (Label*)cell->getChildByTag(123);
+		label->setString(string);
+	}
+
+
+	return cell;
+}
+
+ssize_t RankScene::numberOfCellsInTableView(TableView *table)
+{
+	return 20;
+}
+
+void RankScene::tableCellTouched(TableView* table, TableViewCell* cell)
+{
+	CCLOG("cell touched at index: %ld", static_cast<long>(cell->getIdx()));
 }
