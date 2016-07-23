@@ -33,7 +33,12 @@ extern "C" {
 
 		UserDefault::getInstance()->setStringForKey("user_id", s_id);
 		UserDefault::getInstance()->setStringForKey("user_nickname", s_nickname);
-		
+
+		ServerCommunicator::getInstance()->registerUser(s_id, s_nickname);
+
+		//refresh scene
+		//Director::getInstance()->replaceScene(MainScene::createScene());
+
 		log("updated profile.. user_id is %s, user_nickname is %s", s_id.c_str(), s_nickname.c_str());
 
 		return;

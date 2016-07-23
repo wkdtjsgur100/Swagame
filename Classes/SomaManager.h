@@ -1,7 +1,9 @@
 #pragma once
 
 #include "cocos2d.h"
-
+/*
+	
+*/
 /*
 	소마 글자들을 보여주는 클래스
 */

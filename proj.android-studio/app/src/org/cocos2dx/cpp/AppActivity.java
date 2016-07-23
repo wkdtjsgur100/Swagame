@@ -30,6 +30,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -48,11 +50,20 @@ public class AppActivity extends Cocos2dxActivity {
     public static native void loginSuccess(String id,String nickname);
 
     CallbackManager callbackManager;
+    AccessTokenTracker tokenTracker;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
+
+        tokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                Log.d("test",currentAccessToken.toString());
+            }
+        };
 
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -61,7 +72,7 @@ public class AppActivity extends Cocos2dxActivity {
                         Toast.makeText(getBaseContext(),"로그인 성공",Toast.LENGTH_SHORT).show();
                         Profile profile = Profile.getCurrentProfile();
 
-                        Log.d("deeeeeeebug",profile.getProfilePictureUri(300,300).toString());
+                        Log.d("deeeeeeebug",profile.getId());
 
                         loginSuccess(profile.getId(),profile.getName());
                     }
@@ -78,7 +89,14 @@ public class AppActivity extends Cocos2dxActivity {
                         Toast.makeText(getBaseContext(),"로그인 중 에러가 발생했습니다.",Toast.LENGTH_SHORT).show();
                     }
                 });
+        tokenTracker.startTracking();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        tokenTracker.stopTracking();
     }
 
     @Override
