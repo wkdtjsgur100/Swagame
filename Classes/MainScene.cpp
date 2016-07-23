@@ -2,6 +2,7 @@
 #include "SimpleAudioEngine.h"
 #include "GameScene.h"
 #include "UserProfile.h"
+#include "ServerCommunicator.h"
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 #include "platform/android/jni/JniHelper.h"
@@ -10,6 +11,10 @@
 USING_NS_CC;
 using namespace ui;
 using namespace CocosDenshion;
+
+//로그인 하는 순간 로그인 버튼을 없애기 위함//
+MenuItem* fbLoginBtnPtr = nullptr;
+Label* titleLabelPtr = nullptr;
 
 #if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 
@@ -34,6 +39,14 @@ extern "C" {
 		UserDefault::getInstance()->setStringForKey("user_id", s_id);
 		UserDefault::getInstance()->setStringForKey("user_nickname", s_nickname);
 
+		if(fbLoginBtnPtr != nullptr)
+			fbLoginBtnPtr->setVisible(false);
+
+		if (titleLabelPtr != nullptr)
+		{
+			titleLabelPtr->setString(s_nickname);
+			titleLabelPtr->setVisible(true);
+		}
 		ServerCommunicator::getInstance()->registerUser(s_id, s_nickname);
 
 		//refresh scene
@@ -115,14 +128,16 @@ bool MainScene::init()
 	});
 
 	fbLoginMenuitem->setScale(0.7f);
+	fbLoginBtnPtr = fbLoginMenuitem;
 
 	//게임 스타트 버튼, 랭킹 버튼, 페북 로그인 버튼으로 메뉴 생성
 	auto main_menu = Menu::create(gameStartMenuitem, rankingMenuitem, fbLoginMenuitem, nullptr);
 
+	addLoggedInUserInterface();         //로그인 된 사용자 인터페이스를 add
 	if (UserProfile::getInstance()->isLoggedIn())
 	{
-		fbLoginMenuitem->setVisible(false);	//페북 로그인 버튼을 없애고
-		addLoggedInUserInterface();         //로그인 된 사용자 인터페이스를 add
+		fbLoginMenuitem->setVisible(false);	//페북 로그인 버튼을 없앤다.
+		nickNameLabel->setVisible(true);
 	}
 
 	main_menu->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 200);
@@ -137,7 +152,7 @@ void MainScene::addLoggedInUserInterface()
 {
 	std::string userNickName = UserProfile::getInstance()->getUserNickName();
 
-	auto nickNameLabel = Label::createWithTTF(userNickName, "fonts/kor_font.ttf", 40.0f);
+	nickNameLabel = Label::createWithTTF(userNickName, "fonts/kor_font.ttf", 40.0f);
 	auto subLabel = Label::createWithTTF("WELCOME!!!!", "fonts/kor_font.ttf", 20.0f);
 
 	nickNameLabel->setColor(Color3B::BLACK);
@@ -148,4 +163,16 @@ void MainScene::addLoggedInUserInterface()
 
 	nickNameLabel->addChild(subLabel);
 	addChild(nickNameLabel);
+
+	titleLabelPtr = nickNameLabel;
+}
+
+void MainScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event * event)
+{
+	if (keyCode == EventKeyboard::KeyCode::KEY_BACK)
+	{
+		ServerCommunicator::getInstance()->shutgameTimeUpdate();
+		Director::getInstance()->end();
+		SimpleAudioEngine::getInstance()->end();
+	}
 }

@@ -1,5 +1,7 @@
 #include "AppDelegate.h"
 #include "MainScene.h"
+#include "ServerCommunicator.h"
+
 
 USING_NS_CC;
 
@@ -57,6 +59,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
     glview->setDesignResolutionSize(designResolutionSize.width, designResolutionSize.height, ResolutionPolicy::SHOW_ALL);
     
     register_all_packages();
+
+	
+	ServerCommunicator::getInstance()->userConnectTimeUpdate();
 
     // create a scene. it's an autorelease object
     auto scene = MainScene::createScene();

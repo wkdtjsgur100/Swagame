@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "SimpleAudioEngine.h"
 #include "MainScene.h"
+#include "ServerCommunicator.h"
 
 USING_NS_CC;
 using namespace ui;
@@ -171,6 +172,8 @@ void GameScene::update(float dt)
 
 void GameScene::gameOver()
 {
+	////register user score to server
+	ServerCommunicator::getInstance()->userScoreUpdate(score_label->getString());
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 

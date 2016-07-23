@@ -15,6 +15,7 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../../Classes/AppDelegate.cpp \
                    ../../../Classes/MainScene.cpp \
                    ../../../Classes/SomaManager.cpp \
+                   ../../../Classes/ServerCommunicator.cpp \
 				   ../../../Classes/UserProfile.cpp \
                    ../../../Classes/GameScene.cpp
 
