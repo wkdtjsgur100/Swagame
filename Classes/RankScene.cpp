@@ -38,6 +38,8 @@ bool RankScene::init()
 
 	ServerCommunicator::getInstance()->requestRankDatas(CC_CALLBACK_2(RankScene::onHttpRequestCompleted, this));
 
+	makeRankTable();
+
     return true;
 }
 
@@ -95,7 +97,7 @@ void RankScene::parseJson(const char* json)
 			if (document["user_list"][i].HasMember("fields"))
 			{
 				if (document["user_list"][i]["fields"].HasMember("user_nickname"))
-					log(document["user_list"][i]["fields"]["user_nickname"].GetString());
+					log("%s",document["user_list"][i]["fields"]["user_nickname"].GetString());
 			}
 		}
 		document["user_list"].Clear();
@@ -106,9 +108,9 @@ void RankScene::makeRankTable()
 {
 	Size winSize = Director::getInstance()->getVisibleSize();
 
-	auto tableView = TableView::create(this, Size(60, 250));
+	auto tableView = TableView::create(this, Size(400, 400));
 	tableView->setDirection(ScrollView::Direction::VERTICAL);
-	tableView->setPosition(Vec2(winSize.width - 150, winSize.height / 2 - 120));
+	tableView->setPosition(Vec2(0, winSize.height / 2 - 120));
 	tableView->setDelegate(this);
 	tableView->setVerticalFillOrder(TableView::VerticalFillOrder::TOP_DOWN);
 	
@@ -119,10 +121,7 @@ void RankScene::makeRankTable()
 
 Size RankScene::tableCellSizeForIndex(TableView *table, ssize_t idx)
 {
-	if (idx == 2) {
-		return Size(100, 100);
-	}
-	return Size(60, 60);
+	return Size(400, 70);
 }
 
 TableViewCell* RankScene::tableCellAtIndex(TableView *table, ssize_t idx)
@@ -130,22 +129,22 @@ TableViewCell* RankScene::tableCellAtIndex(TableView *table, ssize_t idx)
 	auto string = StringUtils::format("%ld", static_cast<long>(idx));
 	TableViewCell *cell = table->dequeueCell();
 	if (!cell) {
-		cell = new (std::nothrow) CustomTableViewCell();
+		cell = new (std::nothrow) RankTableViewCell();
 		cell->autorelease();
-		auto sprite = Sprite::create("Images/Icon.png");
-		sprite->setAnchorPoint(Vec2::ZERO);
-		sprite->setPosition(Vec2(0, 0));
-		cell->addChild(sprite);
 
 		auto label = Label::createWithSystemFont(string, "Helvetica", 20.0);
 		label->setPosition(Vec2::ZERO);
 		label->setAnchorPoint(Vec2::ZERO);
+		label->setColor(Color3B::BLACK);
+
 		label->setTag(123);
 		cell->addChild(label);
 	}
 	else
 	{
 		auto label = (Label*)cell->getChildByTag(123);
+		label->setColor(Color3B::BLACK);
+
 		label->setString(string);
 	}
 

@@ -72,7 +72,7 @@ public class AppActivity extends Cocos2dxActivity {
                         Toast.makeText(getBaseContext(),"로그인 성공",Toast.LENGTH_SHORT).show();
                         Profile profile = Profile.getCurrentProfile();
 
-                        Log.d("deeeeeeebug",profile.getId());
+                        Log.d("deeeeeeebug",profile.getProfilePictureUri(200,200).toString());
 
                         loginSuccess(profile.getId(),profile.getName());
                     }

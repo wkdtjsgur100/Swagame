@@ -1,14 +1,29 @@
 #pragma once
 
 #include "cocos2d.h"
-#include "network/HttpClient.h"
-#include "network/HttpResponse.h"
+
 #include "ExtensionExport.h"
 #include "cocos-ext.h"
 
+#include "network/HttpClient.h"
+#include "network/HttpResponse.h"
+
+
+class RankTableViewCell : public cocos2d::extension::TableViewCell
+{
+public:
+	std::string nick_name;
+	std::string score;
+
+	RankTableViewCell() : nick_name(""), score("0")
+	{
+
+	}
+};
 /*
 	랭킹을 보여주는 Scene
 */
+
 class RankScene : public cocos2d::Layer, cocos2d::extension::TableViewDelegate, cocos2d::extension::TableViewDataSource
 {
 public:
