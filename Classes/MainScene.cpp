@@ -3,6 +3,7 @@
 #include "GameScene.h"
 #include "UserProfile.h"
 #include "ServerCommunicator.h"
+#include "RankScene.h"
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
 #include "platform/android/jni/JniHelper.h"
@@ -109,7 +110,10 @@ bool MainScene::init()
 	auto rankingLabel = Label::createWithTTF("RANK", "fonts/font.ttf", 40.0f);
 	rankingLabel->setColor(Color3B::BLACK);
 
-	auto rankingMenuitem = MenuItemLabel::create(rankingLabel);
+	auto rankingMenuitem = MenuItemLabel::create(rankingLabel, [](Ref*) {
+		auto scene = TransitionPageTurn::create(1.0f, RankScene::createScene(), false);
+		Director::getInstance()->replaceScene(scene);
+	});
 
 	//facebook connect 버튼을 누르면 Jni로 facebookLogin native 메서드를 호출합니다. (안드로이드)
 	auto fbLoginMenuitem = MenuItemImage::create("main/facebook_connect_button.png", "main/facebook_connect_button.png",
@@ -148,17 +152,21 @@ bool MainScene::init()
 
 	addChild(fbLoginMenu);
 	addChild(main_menu);
-
+	
+	/*
 	if (UserProfile::getInstance()->isLoggedIn()) //로그인 되어 있으면
 	{
 		main_menu->setVisible(true);
 		fbLoginMenu->setVisible(false);
+		nickNameLabel->setVisible(true);
 	}
 	else
 	{
 		main_menu->setVisible(false);
 		fbLoginMenu->setVisible(true);
-	}
+	}*/
+	fbLoginMenu->setVisible(false);
+	//
 
 	mainMenuBtnPtr = main_menu;
 	fbLoginBtnPtr = fbLoginMenu;

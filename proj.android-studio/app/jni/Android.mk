@@ -17,6 +17,7 @@ LOCAL_SRC_FILES := hellocpp/main.cpp \
                    ../../../Classes/SomaManager.cpp \
                    ../../../Classes/ServerCommunicator.cpp \
 				   ../../../Classes/UserProfile.cpp \
+                   ../../../Classes/RankScene.cpp \
                    ../../../Classes/GameScene.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../Classes

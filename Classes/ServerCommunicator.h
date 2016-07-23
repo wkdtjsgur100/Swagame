@@ -24,6 +24,8 @@ public:
 	void userScoreUpdate(std::string userScore);
 	void userConnectTimeUpdate();
 	void shutgameTimeUpdate();
-	
+	//랭킹에 따른 유저들의 정보를 Json 형태로 받아온다.
+	void requestRankDatas(const cocos2d::network::ccHttpRequestCallback& callback);
+
 	void onHttpRequestCompleted(cocos2d::network::HttpClient *sender, cocos2d::network::HttpResponse *response);
 };

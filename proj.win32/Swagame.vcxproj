@@ -147,6 +147,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\GameScene.cpp" />
     <ClCompile Include="..\Classes\MainScene.cpp" />
+    <ClCompile Include="..\Classes\RankScene.cpp" />
     <ClCompile Include="..\Classes\ServerCommunicator.cpp" />
     <ClCompile Include="..\Classes\SomaManager.cpp" />
     <ClCompile Include="..\Classes\UserProfile.cpp" />
@@ -156,6 +157,14 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\GameScene.h" />
     <ClInclude Include="..\Classes\MainScene.h" />
+    <ClInclude Include="..\Classes\RankScene.h" />
+    <ClInclude Include="..\Classes\rapidjson\document.h" />
+    <ClInclude Include="..\Classes\rapidjson\filestream.h" />
+    <ClInclude Include="..\Classes\rapidjson\prettywriter.h" />
+    <ClInclude Include="..\Classes\rapidjson\rapidjson.h" />
+    <ClInclude Include="..\Classes\rapidjson\reader.h" />
+    <ClInclude Include="..\Classes\rapidjson\stringbuffer.h" />
+    <ClInclude Include="..\Classes\rapidjson\writer.h" />
     <ClInclude Include="..\Classes\ServerCommunicator.h" />
     <ClInclude Include="..\Classes\SomaManager.h" />
     <ClInclude Include="..\Classes\UserProfile.h" />

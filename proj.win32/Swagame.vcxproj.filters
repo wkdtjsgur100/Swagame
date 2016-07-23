@@ -10,6 +10,9 @@
     <Filter Include="src">
       <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\rapidJson">
+      <UniqueIdentifier>{0af589f9-0bbc-4a69-92b3-812d2b52b7e7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -31,6 +34,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\Classes\ServerCommunicator.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\RankScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -55,6 +61,30 @@
     </ClInclude>
     <ClInclude Include="..\Classes\ServerCommunicator.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\RankScene.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\rapidjson\document.h">
+      <Filter>src\rapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\rapidjson\filestream.h">
+      <Filter>src\rapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\rapidjson\prettywriter.h">
+      <Filter>src\rapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\rapidjson\rapidjson.h">
+      <Filter>src\rapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\rapidjson\reader.h">
+      <Filter>src\rapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\rapidjson\stringbuffer.h">
+      <Filter>src\rapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\rapidjson\writer.h">
+      <Filter>src\rapidJson</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

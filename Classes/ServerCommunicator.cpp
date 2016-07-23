@@ -72,6 +72,17 @@ void ServerCommunicator::shutgameTimeUpdate()
 	sendDataToServer(data, "shutgame time update", HttpRequest::Type::PUT);
 }
 
+void ServerCommunicator::requestRankDatas(const ccHttpRequestCallback& callback)
+{
+	HttpRequest* request = new (std::nothrow) HttpRequest();
+
+	request->setUrl("http://52.78.94.176:8000/user/");
+	request->setRequestType(HttpRequest::Type::GET);
+	request->setResponseCallback(callback);
+
+	HttpClient::getInstance()->send(request);
+}
+
 void ServerCommunicator::onHttpRequestCompleted(HttpClient * sender, HttpResponse * response)
 {
 	if (!response)
