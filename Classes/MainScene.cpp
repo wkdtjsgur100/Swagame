@@ -97,9 +97,8 @@ bool MainScene::init()
 	sprite->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 	this->addChild(sprite, 0);
 
-	auto gameStartLabel = Label::createWithTTF("GAME START", "fonts/font.ttf", 40.0f);
-	gameStartLabel->setColor(Color3B::BLACK);
-
+	auto gameStartLabel = Label::createWithTTF("start", "fonts/font.ttf", 40.0f);
+	
 	//GAME START Label을 누르면 GameScene으로 Transition
 	auto gameStartMenuitem = MenuItemLabel::create(gameStartLabel, [&](Ref* sender) {
 		//transition to GameScene
@@ -107,9 +106,8 @@ bool MainScene::init()
 		Director::getInstance()->replaceScene(scene);
 	});
 
-	auto rankingLabel = Label::createWithTTF("RANK", "fonts/font.ttf", 40.0f);
-	rankingLabel->setColor(Color3B::BLACK);
-
+	auto rankingLabel = Label::createWithTTF("rank", "fonts/font.ttf", 40.0f);
+	
 	auto rankingMenuitem = MenuItemLabel::create(rankingLabel, [](Ref*) {
 		auto scene = TransitionPageTurn::create(1.0f, RankScene::createScene(), false);
 		Director::getInstance()->replaceScene(scene);
@@ -148,7 +146,13 @@ bool MainScene::init()
 
 	auto fbLoginMenu = Menu::createWithItem(fbLoginMenuitem);
 
-	fbLoginMenu->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 220);
+	fbLoginMenu->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 150);
+
+	auto fbLoginLabel = Label::createWithTTF("click facebook button to login", "fonts/kor_font.ttf", 40.0f);
+
+	fbLoginLabel->setPosition(30, -50);
+
+	fbLoginMenuitem->addChild(fbLoginLabel);
 
 	addChild(fbLoginMenu);
 	addChild(main_menu);
@@ -164,12 +168,15 @@ bool MainScene::init()
 	{
 		main_menu->setVisible(false);
 		fbLoginMenu->setVisible(true);
-	}*/
+	}
+	*/
 	fbLoginMenu->setVisible(false);
 	//
 
 	mainMenuBtnPtr = main_menu;
 	fbLoginBtnPtr = fbLoginMenu;
+
+	this->setKeypadEnabled(true);
 
     return true;
 }
@@ -179,13 +186,13 @@ void MainScene::addLoggedInUserInterface()
 	std::string userNickName = UserProfile::getInstance()->getUserNickName();
 
 	nickNameLabel = Label::createWithTTF(userNickName, "fonts/kor_font.ttf", 40.0f);
-	auto subLabel = Label::createWithTTF("WELCOME!!!!", "fonts/kor_font.ttf", 20.0f);
+	auto subLabel = Label::createWithTTF("is connected!", "fonts/kor_font.ttf", 20.0f);
 
-	nickNameLabel->setColor(Color3B::BLACK);
-	nickNameLabel->setPosition(100, 700);
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+
+	nickNameLabel->setPosition(visibleSize.width/2, 300);
 
 	subLabel->setPosition(subLabel->getContentSize().width / 2, -subLabel->getContentSize().height / 2);
-	subLabel->setColor(Color3B::BLACK);
 
 	nickNameLabel->addChild(subLabel);
 	addChild(nickNameLabel);

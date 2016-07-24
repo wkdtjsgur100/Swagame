@@ -49,30 +49,22 @@ bool GameScene::init()
     // add the sprite as a child to this layer
     this->addChild(sprite, 0);
     
-	btn_so = Button::create("btn_so.png");
-	btn_so->setPosition(Vec2(130, 150));
-	btn_so->setZoomScale(0.7f);
-	btn_so->addTouchEventListener([&](Ref*,Widget::TouchEventType e) {
-		if (e == Widget::TouchEventType::BEGAN)
-		{
-			SimpleAudioEngine::getInstance()->playEffect("sound/so.ogg");
-			correctCheck(0);
-		}
+	btn_so = MenuItemImage::create("button/btn_so.png","button/btn_so_pressed.png", [&](Ref*) {
+		SimpleAudioEngine::getInstance()->playEffect("sound/so.ogg");
+		correctCheck(0);
 	});
-	addChild(btn_so);
-
-	btn_ma = Button::create("btn_ma.png");
-	btn_ma->setPosition(Vec2(350, 150));
-	btn_ma->setZoomScale(0.7f); 
-	btn_ma->addTouchEventListener([&](Ref*, Widget::TouchEventType e) {
-		if (e == Widget::TouchEventType::BEGAN)
-		{
-			SimpleAudioEngine::getInstance()->playEffect("sound/ma.ogg");
-			correctCheck(1);
-		}
+	
+	btn_ma = MenuItemImage::create("button/btn_ma.png", "button/btn_ma_pressed.png", [&](Ref*) {
+		SimpleAudioEngine::getInstance()->playEffect("sound/ma.ogg");
+		correctCheck(1);
 	});
+	
+	auto btn_menu = Menu::create(btn_so, btn_ma, nullptr);
 
-	addChild(btn_ma);
+	btn_menu->setPosition(visibleSize.width / 2, btn_so->getContentSize().height / 2);
+	btn_menu->alignItemsHorizontallyWithPadding(10);
+
+	addChild(btn_menu);
 
 	swagManager = SomaWordManager::create();
 	swagManager->retain();
@@ -89,10 +81,10 @@ bool GameScene::init()
 	addChild(timer);
 
 	//score view
-	score_label = Label::createWithTTF("0", "fonts/font.ttf", 50.0f,Size::ZERO);
+	score_label = Label::createWithTTF("0", "fonts/game_font.ttf", 50.0f,Size::ZERO);
 
-	score_label->setColor(Color3B::BLACK);
-	score_label->setPosition(visibleSize.width / 2+70, 750);
+	score_label->setColor(Color3B::WHITE);
+	score_label->setPosition(visibleSize.width - 50, 750);
 
 	addChild(score_label);
 
@@ -124,12 +116,12 @@ void GameScene::changeTimerType(int timerType)
 	if (timerType == 0)
 	{
 		timer->setTag(0);
-		timer->setColor(Color3B::GREEN);
+		timer->setColor(Color3B::MAGENTA);
 		fTime = swagManager->getCurrentWordShowTime();
 	}
 	else {
 		timer->setTag(1);
-		timer->setColor(Color3B::RED);
+		timer->setColor(Color3B::WHITE);
 		fTime = swagManager->getCurrentWaitTime();
 	}
 }
@@ -172,6 +164,9 @@ void GameScene::update(float dt)
 
 void GameScene::gameOver()
 {
+	auto darkLayer = LayerColor::create(Color4B(0, 0, 0, 100));
+
+	addChild(darkLayer);
 	////register user score to server
 	ServerCommunicator::getInstance()->userScoreUpdate(score_label->getString());
 
@@ -184,7 +179,9 @@ void GameScene::gameOver()
 	auto btnOk = Button::create("game_over/ok_button.png");
 	auto retryBtn = Button::create("game_over/retry_button.png");
 
-	btnOk->setPosition(Vec2(110, 55));
+	Size boxSize = overBox->getContentSize();
+
+	btnOk->setPosition(Vec2(boxSize.width/2-60, 100));
 	btnOk->addTouchEventListener([&](Ref*, Widget::TouchEventType e) {
 		if (e == Widget::TouchEventType::ENDED)
 		{
@@ -193,7 +190,7 @@ void GameScene::gameOver()
 		}
 	});
 	
-	retryBtn->setPosition(Vec2(300, 55));
+	retryBtn->setPosition(Vec2(boxSize.width / 2 + 60, 100));
 
 	retryBtn->addTouchEventListener([&](Ref*, Widget::TouchEventType e) {
 		if (e == Widget::TouchEventType::ENDED)
@@ -207,9 +204,9 @@ void GameScene::gameOver()
 	overBox->addChild(btnOk);
 	overBox->addChild(retryBtn);
 
-	auto score_lb = Label::createWithTTF(score_label->getString(), "fonts/font.ttf", 50.0f, Size::ZERO);
-
-	score_lb->setPosition(262, 235);
+	auto score_lb = Label::createWithTTF(score_label->getString(), "fonts/game_font.ttf", 30.0f, Size::ZERO);
+	score_lb->setColor(Color3B(90, 90, 90));
+	score_lb->setPosition(200, 210);
 	overBox->addChild(score_lb);
 	addChild(overBox);
 

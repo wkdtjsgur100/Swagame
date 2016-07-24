@@ -13,8 +13,8 @@ class GameScene : public cocos2d::Layer
 	cocos2d::ProgressTimer* timer;
 	float fTime;
 
-	cocos2d::ui::Button* btn_so;
-	cocos2d::ui::Button* btn_ma;
+	cocos2d::MenuItemImage* btn_so;
+	cocos2d::MenuItemImage* btn_ma;
 public:
     static cocos2d::Scene* createScene();
 

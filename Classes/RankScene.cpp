@@ -2,6 +2,7 @@
 #include "ServerCommunicator.h"
 #include "rapidjson/document.h"
 #include "rapidjson/reader.h"
+#include "MainScene.h"
 
 USING_NS_CC;
 using namespace network;
@@ -32,13 +33,25 @@ bool RankScene::init()
 
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 
-	auto sprite = Sprite::create("main/background.png");
+	auto sprite = Sprite::create("rank/background.png");
 	sprite->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 	this->addChild(sprite, 0);
 
 	ServerCommunicator::getInstance()->requestRankDatas(CC_CALLBACK_2(RankScene::onHttpRequestCompleted, this));
+	
+	this->setKeypadEnabled(true);
 
-	makeRankTable();
+	auto backLabel = Label::createWithTTF("<- Back", "fonts/font.ttf", 50.0f);
+
+	auto backBtn = MenuItemLabel::create(backLabel, [&](Ref*) {
+		auto scene = TransitionPageTurn::create(1.0f, MainScene::createScene(), true);
+		Director::getInstance()->replaceScene(scene);
+	});
+	
+	auto backMenu = Menu::createWithItem(backBtn);
+
+	backMenu->setPosition(visibleSize.width / 2, 100);
+	addChild(backMenu);
 
     return true;
 }
@@ -65,6 +78,10 @@ void RankScene::onHttpRequestCompleted(HttpClient * sender, HttpResponse * respo
 	const char* json = s_response.c_str();
 	
 	parseJson(json);
+
+	loadProfilePictures();
+	
+	makeRankTable();
 }
 
 void RankScene::parseJson(const char* json)
@@ -96,8 +113,26 @@ void RankScene::parseJson(const char* json)
 		{
 			if (document["user_list"][i].HasMember("fields"))
 			{
+				RankCellData rcd;
+
 				if (document["user_list"][i]["fields"].HasMember("user_nickname"))
-					log("%s",document["user_list"][i]["fields"]["user_nickname"].GetString());
+				{
+					if (document["user_list"][i]["fields"]["user_nickname"].IsString())
+						rcd.nick_name = document["user_list"][i]["fields"]["user_nickname"].GetString();
+				}
+				if (document["user_list"][i]["fields"].HasMember("user_id"))
+				{
+					if (document["user_list"][i]["fields"]["user_id"].IsString())
+						rcd.id = document["user_list"][i]["fields"]["user_id"].GetString();
+				}
+				if (document["user_list"][i]["fields"].HasMember("user_score"))
+				{
+					if (document["user_list"][i]["fields"]["user_score"].IsInt())
+						rcd.score = StringUtils::format("%d", document["user_list"][i]["fields"]["user_score"].GetInt());
+				}
+				rankDatas.push_back(rcd);
+
+				log("rcd is got a %s,%s,%s", rcd.nick_name.c_str(), rcd.id.c_str(), rcd.score.c_str());
 			}
 		}
 		document["user_list"].Clear();
@@ -108,9 +143,9 @@ void RankScene::makeRankTable()
 {
 	Size winSize = Director::getInstance()->getVisibleSize();
 
-	auto tableView = TableView::create(this, Size(400, 400));
+	auto tableView = TableView::create(this, Size(480, 600));
 	tableView->setDirection(ScrollView::Direction::VERTICAL);
-	tableView->setPosition(Vec2(0, winSize.height / 2 - 120));
+	tableView->setPosition(Vec2(0, 150));
 	tableView->setDelegate(this);
 	tableView->setVerticalFillOrder(TableView::VerticalFillOrder::TOP_DOWN);
 	
@@ -118,34 +153,83 @@ void RankScene::makeRankTable()
 	tableView->reloadData();
 }
 
+void RankScene::loadProfilePictures()
+{
+	//extension method
+}
+
+void RankScene::onExit()
+{
+	Layer::onExit();
+
+	rankDatas.clear();
+}
+
 
 Size RankScene::tableCellSizeForIndex(TableView *table, ssize_t idx)
 {
-	return Size(400, 70);
+	return Size(480, 70);
 }
 
 TableViewCell* RankScene::tableCellAtIndex(TableView *table, ssize_t idx)
 {
-	auto string = StringUtils::format("%ld", static_cast<long>(idx));
+	auto string = StringUtils::format("%ld", static_cast<long>(idx+1));
+	RankCellData cellData;
+
+	try {
+		cellData = rankDatas.at(idx);
+	}
+	catch (const std::out_of_range& oor) {
+	}
+
 	TableViewCell *cell = table->dequeueCell();
 	if (!cell) {
 		cell = new (std::nothrow) RankTableViewCell();
 		cell->autorelease();
 
-		auto label = Label::createWithSystemFont(string, "Helvetica", 20.0);
-		label->setPosition(Vec2::ZERO);
+		
+		auto label = Label::createWithTTF(string, "fonts/font.ttf", 50.0f);
 		label->setAnchorPoint(Vec2::ZERO);
-		label->setColor(Color3B::BLACK);
+		label->setTag(100);
 
-		label->setTag(123);
+		Sprite* profileSpr;
+
+		if (cellData.profileTex != nullptr)
+			profileSpr = Sprite::createWithTexture(cellData.profileTex);
+		else
+			profileSpr = Sprite::create();
+
+		profileSpr->setTag(103);
+
+		auto nickNameLabel = Label::createWithTTF(cellData.nick_name, "fonts/font.ttf", 50.0f);
+		nickNameLabel->setAnchorPoint(Vec2::ZERO);
+		nickNameLabel->setTag(101);
+		nickNameLabel->setPosition(100, 0);
+		
+		auto scoreLabel = Label::createWithTTF(cellData.score, "fonts/font.ttf", 50.0f);
+		scoreLabel->setAnchorPoint(Vec2::ZERO);
+		scoreLabel->setTag(102);
+		scoreLabel->setPosition(350, 0);
+
 		cell->addChild(label);
+		cell->addChild(nickNameLabel);
+		cell->addChild(scoreLabel);
+		cell->addChild(profileSpr);
 	}
 	else
 	{
-		auto label = (Label*)cell->getChildByTag(123);
-		label->setColor(Color3B::BLACK);
-
+		auto label = (Label*)cell->getChildByTag(100);
 		label->setString(string);
+
+		auto nickNameLabel = (Label*)cell->getChildByTag(101);
+		nickNameLabel->setString(cellData.nick_name);	
+
+		auto scoreLabel = (Label*)cell->getChildByTag(102);
+		scoreLabel->setString(cellData.score);
+
+		auto profileSpr = (Sprite*)cell->getChildByTag(103);
+		if(cellData.profileTex != nullptr)
+			profileSpr->setTexture(cellData.profileTex);
 	}
 
 
@@ -157,7 +241,38 @@ ssize_t RankScene::numberOfCellsInTableView(TableView *table)
 	return 20;
 }
 
+void RankScene::onKeyReleased(EventKeyboard::KeyCode keycode, cocos2d::Event * event)
+{
+	if (keycode == EventKeyboard::KeyCode::KEY_BACK)
+	{
+		auto scene = TransitionPageTurn::create(1.0f, MainScene::createScene(), true);
+		Director::getInstance()->replaceScene(scene);
+	}
+}
+
 void RankScene::tableCellTouched(TableView* table, TableViewCell* cell)
 {
 	CCLOG("cell touched at index: %ld", static_cast<long>(cell->getIdx()));
+}
+
+bool RankTableViewCell::init()
+{
+	if (!TableViewCell::init())
+		return false;
+
+	return true;
+}
+
+RankCellData::RankCellData()
+{
+	id = "0";
+	nick_name = "empty";
+	score = "0";
+	profileTex = nullptr;
+}
+
+RankCellData::~RankCellData()
+{
+	if (profileTex != nullptr)
+		profileTex->release();
 }
