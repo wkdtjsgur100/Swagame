@@ -107,6 +107,7 @@ void SomaWordManager::refresh()
 	numberOfCorrect = 0;
 	wordLength = stageDatas.wordLength;
 	wordShowTime = stageDatas.wordShowTime;
+	correctWaitTime = stageDatas.correctWaitTime;
 
 	currentQuestion = random(0, (1 << wordLength+1) - 1);
 }
