@@ -94,8 +94,9 @@ bool GameScene::init()
 	
 	addChild(somaWordViewer);
 
-	SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/background.wav", true);
 	scheduleUpdate();
+
+	SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/background.wav", true);
 
     return true;
 }

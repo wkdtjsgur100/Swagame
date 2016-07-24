@@ -39,6 +39,9 @@
     <ClCompile Include="..\Classes\RankScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\StageManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -85,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="..\Classes\rapidjson\writer.h">
       <Filter>src\rapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\StageManager.h">
+      <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,9 +1,7 @@
 #pragma once
 
 #include "cocos2d.h"
-/*
-	
-*/
+#include "StageManager.h"
 /*
 	소마 글자들을 보여주는 클래스
 */
@@ -21,6 +19,10 @@ public:
 	CREATE_FUNC(SomaWordViewer);
 };
 
+/*
+ 맞춰야 하는 글자들을 관리하는 클래스
+ */
+
 class SomaWordManager : public cocos2d::Ref
 {
 	unsigned int currentQuestion;
@@ -31,6 +33,7 @@ class SomaWordManager : public cocos2d::Ref
 
 	//맞춘개수
 	int numberOfCorrect;
+	StageManager stageManager;
 public:
 	unsigned int getCurrentQuestion() const;
 	float getCurrentWordShowTime() const;

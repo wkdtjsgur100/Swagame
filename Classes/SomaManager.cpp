@@ -104,6 +104,7 @@ void SomaWordManager::refresh()
 	numberOfCorrect = 0;
 	wordLength = 4 + level / 5;
 	wordShowTime = 3.0f + (wordLength-4)*0.1f - level / 10.0f;
+	correctWaitTime = 
 
 	currentQuestion = random(0, (1 << wordLength+1) - 1);
 }
@@ -116,6 +117,8 @@ bool SomaWordManager::init()
 	wordLength = 2;
 	level = 1;
 	numberOfCorrect = 0;
+
+	stageManager.loadCsvDatas();
 
 	return true;
 }

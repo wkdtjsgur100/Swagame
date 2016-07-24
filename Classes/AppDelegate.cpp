@@ -60,7 +60,6 @@ bool AppDelegate::applicationDidFinishLaunching() {
     
     register_all_packages();
 
-	
 	ServerCommunicator::getInstance()->userConnectTimeUpdate();
 
     // create a scene. it's an autorelease object
