@@ -235,7 +235,7 @@ void GameScene::correctCheck(int type)
 
 			if (swagManager->isAllCorrect())
 			{
-				addScore(100);
+				addScore(30 + swagManager->getLevel());
 				refreshQuestion();
 			}
 		}

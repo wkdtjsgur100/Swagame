@@ -35,6 +35,7 @@ class SomaWordManager : public cocos2d::Ref
 	int numberOfCorrect;
 	StageManager stageManager;
 public:
+	unsigned int getLevel() const;
 	unsigned int getCurrentQuestion() const;
 	float getCurrentWordShowTime() const;
 	float getCurrentWaitTime() const;

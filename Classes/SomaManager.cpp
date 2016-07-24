@@ -20,7 +20,7 @@ void SomaWordViewer::printWords(const unsigned int value,int length)
 
 	for (int i = 0; i < 4;i++)
 	{
-		for (int j = 0; j < 7; j++)
+		for (int j = 0; j < 9; j++)
 		{
 			Sprite* newSpr;
 
@@ -60,6 +60,11 @@ void SomaWordViewer::showWord()
 			break;
 		}
 	}
+}
+
+unsigned int SomaWordManager::getLevel() const
+{
+	return level;
 }
 
 unsigned int SomaWordManager::getCurrentQuestion() const
