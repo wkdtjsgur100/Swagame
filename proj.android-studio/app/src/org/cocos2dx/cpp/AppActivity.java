@@ -37,6 +37,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.ProfilePictureView;
@@ -51,7 +52,7 @@ public class AppActivity extends Cocos2dxActivity {
 
     CallbackManager callbackManager;
     AccessTokenTracker tokenTracker;
-
+    ProfileTracker profileTracker;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,11 +71,21 @@ public class AppActivity extends Cocos2dxActivity {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         Toast.makeText(getBaseContext(),"로그인 성공",Toast.LENGTH_SHORT).show();
+
                         Profile profile = Profile.getCurrentProfile();
-
-                        Log.d("deeeeeeebug",profile.getProfilePictureUri(200,200).toString());
-
-                        loginSuccess(profile.getId(),profile.getName());
+                        if(profile == null) {
+                            profileTracker = new ProfileTracker() {
+                                @Override
+                                protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
+                                    loginSuccess(profile2.getId(),profile2.getName());
+                                    profileTracker.stopTracking();
+                                }
+                            };
+                            // no need to call startTracking() on mProfileTracker
+                            // because it is called by its constructor, internally.
+                        }
+                        else
+                            loginSuccess(profile.getId(),profile.getName());
                     }
 
                     @Override

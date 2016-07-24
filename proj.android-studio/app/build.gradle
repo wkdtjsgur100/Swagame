@@ -7,8 +7,8 @@ android {
         applicationId "com.jang.swag"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 101
+        versionName "1.01"
     }
     sourceSets.main {
         java.srcDir "src"
