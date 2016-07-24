@@ -19,5 +19,7 @@ class StageManager
 
 	void parsingData(std::string target);
 public:
+	//레벨은 1레벨 부터 시작합니다.
+	StageComponent getDataFromLevel(int level);
 	void loadCsvDatas();
 };

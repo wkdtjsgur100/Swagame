@@ -9,13 +9,16 @@ void StageManager::parsingData(std::string target)
 	std::string str;
 	int cnt = 0;
 	StageComponent component;
+	size_t i;
+	for (i = 0; target.at(i) != '\n'; i++);
 
-	for (size_t i = 0; i < target.size(); i++)
+	i += 1;
+	for (; i < target.size(); i++)
 	{
 		char chk_c = target.at(i);
-		if (chk_c == ',')
+		if (chk_c == ',' || chk_c == '\n')
 		{
-			switch (cnt % 3)
+			switch (cnt)
 			{
 			case 0:
 				component.wordLength = atoi(str.c_str());
@@ -28,12 +31,33 @@ void StageManager::parsingData(std::string target)
 				break;
 			}
 			cnt++;
+			if (cnt > 2)
+				cnt = 0;
+
+			if (chk_c == '\n')
+				stageDatas.push_back(component);
 			str = "";
 		}
-		else if (chk_c == '\n')
-			stageDatas.push_back(component);
 		else
 			str += chk_c;
+	}
+}
+
+StageComponent StageManager::getDataFromLevel(int level)
+{
+	if(level-1 < stageDatas.size())
+		return stageDatas.at(level-1);
+	else
+	{
+		//csv보다 레벨이 높으면 component를 정해진 공식대로 만들어서 반환
+		StageComponent ret_sc;
+		StageComponent last_stage = stageDatas.back();
+
+		ret_sc.wordLength = last_stage.wordLength;
+		ret_sc.correctWaitTime = last_stage.correctWaitTime;
+		ret_sc.wordShowTime = last_stage.wordShowTime;
+
+		return ret_sc;
 	}
 }
 

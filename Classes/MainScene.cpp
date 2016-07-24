@@ -157,7 +157,7 @@ bool MainScene::init()
 	addChild(fbLoginMenu);
 	addChild(main_menu);
 	
-	
+	/*
 	if (UserProfile::getInstance()->isLoggedIn()) //로그인 되어 있으면
 	{
 		main_menu->setVisible(true);
@@ -169,7 +169,9 @@ bool MainScene::init()
 		main_menu->setVisible(false);
 		fbLoginMenu->setVisible(true);
 	}
-	
+	*/
+	fbLoginMenu->setVisible(false);
+
 	//
 
 	mainMenuBtnPtr = main_menu;

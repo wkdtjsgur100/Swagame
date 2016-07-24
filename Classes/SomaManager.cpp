@@ -101,10 +101,12 @@ bool SomaWordManager::isAllCorrect()
 void SomaWordManager::refresh()
 {
 	level++;
+
+	StageComponent stageDatas = stageManager.getDataFromLevel(level);
+
 	numberOfCorrect = 0;
-	wordLength = 4 + level / 5;
-	wordShowTime = 3.0f + (wordLength-4)*0.1f - level / 10.0f;
-	correctWaitTime = 
+	wordLength = stageDatas.wordLength;
+	wordShowTime = stageDatas.wordShowTime;
 
 	currentQuestion = random(0, (1 << wordLength+1) - 1);
 }
@@ -115,7 +117,7 @@ bool SomaWordManager::init()
 	wordShowTime = 2.0f;
 	correctWaitTime = 20.0f;
 	wordLength = 2;
-	level = 1;
+	level = 0;
 	numberOfCorrect = 0;
 
 	stageManager.loadCsvDatas();
